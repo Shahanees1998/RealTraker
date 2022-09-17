@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { LoginScreen } from '../../features/account/screens/LoginScreen';
+import { LoginDashBoardScreen } from '../../features/account/screens/LoginDashBoardScreen';
 import OnboardingScreen from '../../features/onBoarding/OnboardingScreen';
 
 const Stack = createStackNavigator();
@@ -12,6 +12,6 @@ export const AccountNavigator = () => (
               name="OnboardingScreen"
               component={OnboardingScreen}
             />
-    <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen name="LoginDashBoard" component={LoginDashBoardScreen} />
   </Stack.Navigator>
 );

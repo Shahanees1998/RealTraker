@@ -8,10 +8,15 @@ export const colors = {
     GreyScale: '#14142B',
     LightGrey: '#6E7191',
     primary: '#f2f2ec',
-    Secondary: '#eefafc',
+    Secondary: '#E0F3FB',
     disabled: '#DEDEDE',
     error: '#D0421B',
     success: '#138000',
+    blue: '#0F4B81',
+    white : '#FCFCFC',
+    boxWhite : '#F7F7FC',
+    grey : '#D9DBE9',
+    GrayscaleBlack : '#14142B'
   },
   bg: {
     primary: '#FFFFFF',

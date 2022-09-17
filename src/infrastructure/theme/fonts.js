@@ -1,3 +1,8 @@
+
+
+
+
+
 export const fonts = {
   body: 'Oswald_400Regular',
   heading: 'Lato_400Regular',
@@ -13,7 +18,7 @@ export const fontWeights = {
 export const fontSizes = {
   caption: '12px',
   button: '14px',
-  body: '16px',
+  body: '15px',
   title: '20px',
   h5: '24px',
   h4: '34px',
