@@ -13,11 +13,11 @@ import { Table, Row, Rows } from "react-native-table-component";
 import { colors } from "../theme/colors";
 import { PieChart } from "react-native-chart-kit";
 import { Avatar } from "react-native-paper";
-import { AccountCover } from "../../features/account/components/Account.styles";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import DashboardScreen from '../../features/account/screens/Dashboard';
-import Settings from '../../features/account/screens/Settings'
+// import { AccountCover } from "../../features/account/components/Account.styles";
+// import { NavigationContainer } from "@react-navigation/native";
+// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+// import DashboardScreen from '../../features/account/screens/Dashboard';
+// import Settings from '../../features/account/screens/Settings'
 const { width, height } = Dimensions.get("window");
 
 const BottomTabNavigator = () => {
@@ -124,12 +124,12 @@ const BottomTabNavigator = () => {
                 </TouchableOpacity>
               </View>
             </View>
-          </View>
-        </View>
-        <Table borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}>
+            <Table borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}>
           <Row data={header} />
           <Rows data={data} />
         </Table>
+          </View>
+        </View>
         <PieChart
           data={data1}
           width={width}
@@ -142,12 +142,6 @@ const BottomTabNavigator = () => {
           absolute
         />
       </View>
-      <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen name="Dashboard" component={DashboardScreen} />
-          <Tab.Screen name="More" component={Settings} />
-        </Tab.Navigator>
-      </NavigationContainer>
     </>
   );
 };
@@ -200,7 +194,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: 10,
     paddingLeft: 10,
-    borderColor: colors.ui.GreyScale,
+    borderColor: colors.ui.LightGrey,
     width: "90%",
     backgroundColor: colors.ui.LightGrey,
   },
