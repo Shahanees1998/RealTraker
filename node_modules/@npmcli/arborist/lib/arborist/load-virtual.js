@@ -57,6 +57,7 @@ module.exports = cls => class VirtualLoader extends cls {
     const s = await Shrinkwrap.load({
       path: this.path,
       lockfileVersion: this.options.lockfileVersion,
+      resolveOptions: this.options,
     })
     if (!s.loadedFromDisk && !options.root) {
       const er = new Error('loadVirtual requires existing shrinkwrap file')
@@ -161,7 +162,7 @@ module.exports = cls => class VirtualLoader extends cls {
       lockfile: s.data,
     })
     for (const [name, path] of workspaces.entries()) {
-      lockWS.push(['workspace', name, `file:${path}`])
+      lockWS.push(['workspace', name, `file:${path.replace(/#/g, '%23')}`])
     }
 
     const lockEdges = [
@@ -278,6 +279,7 @@ module.exports = cls => class VirtualLoader extends cls {
     const peer = sw.peer
 
     const node = new Node({
+      installLinks: this.installLinks,
       legacyPeerDeps: this.legacyPeerDeps,
       root: this.virtualTree,
       path,
@@ -304,6 +306,7 @@ module.exports = cls => class VirtualLoader extends cls {
   [loadLink] (location, targetLoc, target, meta) {
     const path = resolve(this.path, location)
     const link = new Link({
+      installLinks: this.installLinks,
       legacyPeerDeps: this.legacyPeerDeps,
       path,
       realpath: resolve(this.path, targetLoc),

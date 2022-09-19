@@ -115,6 +115,7 @@ module.exports = cls => class ActualLoader extends cls {
       root = null,
       transplantFilter = () => true,
       ignoreMissing = false,
+      forceActual = false,
     } = options
     this[_filter] = filter
     this[_transplantFilter] = transplantFilter
@@ -141,24 +142,30 @@ module.exports = cls => class ActualLoader extends cls {
 
     this[_actualTree].assertRootOverrides()
 
-    // Note: hidden lockfile will be rejected if it's not the latest thing
-    // in the folder, or if any of the entries in the hidden lockfile are
-    // missing.
-    const meta = await Shrinkwrap.load({
-      path: this[_actualTree].path,
-      hiddenLockfile: true,
-    })
-    if (meta.loadedFromDisk) {
-      this[_actualTree].meta = meta
-      return this[_loadActualVirtually]({ root })
-    } else {
+    // if forceActual is set, don't even try the hidden lockfile
+    if (!forceActual) {
+      // Note: hidden lockfile will be rejected if it's not the latest thing
+      // in the folder, or if any of the entries in the hidden lockfile are
+      // missing.
       const meta = await Shrinkwrap.load({
         path: this[_actualTree].path,
-        lockfileVersion: this.options.lockfileVersion,
+        hiddenLockfile: true,
+        resolveOptions: this.options,
       })
-      this[_actualTree].meta = meta
-      return this[_loadActualActually]({ root, ignoreMissing })
+
+      if (meta.loadedFromDisk) {
+        this[_actualTree].meta = meta
+        return this[_loadActualVirtually]({ root })
+      }
     }
+
+    const meta = await Shrinkwrap.load({
+      path: this[_actualTree].path,
+      lockfileVersion: this.options.lockfileVersion,
+      resolveOptions: this.options,
+    })
+    this[_actualTree].meta = meta
+    return this[_loadActualActually]({ root, ignoreMissing })
   }
 
   async [_loadActualVirtually] ({ root }) {
@@ -194,7 +201,7 @@ module.exports = cls => class ActualLoader extends cls {
       const actualRoot = tree.isLink ? tree.target : tree
       const { dependencies = {} } = actualRoot.package
       for (const [name, kid] of actualRoot.children.entries()) {
-        const def = kid.isLink ? `file:${kid.realpath}` : '*'
+        const def = kid.isLink ? `file:${kid.realpath.replace(/#/g, '%23')}` : '*'
         dependencies[name] = dependencies[name] || def
       }
       actualRoot.package = { ...actualRoot.package, dependencies }
@@ -283,6 +290,7 @@ module.exports = cls => class ActualLoader extends cls {
       .then(pkg => [pkg, null], error => [null, error])
       .then(([pkg, error]) => {
         return this[normalize(path) === real ? _newNode : _newLink]({
+          installLinks: this.installLinks,
           legacyPeerDeps: this.legacyPeerDeps,
           path,
           realpath: real,
@@ -339,6 +347,7 @@ module.exports = cls => class ActualLoader extends cls {
       // node_modules hierarchy, then load that node as well.
       return this[_loadFSTree](link.target).then(() => link)
     } else if (target.then) {
+      // eslint-disable-next-line promise/catch-or-return
       target.then(node => link.target = node)
     }
 
